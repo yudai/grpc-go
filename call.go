@@ -262,6 +262,7 @@ func invoke(ctx context.Context, method string, args, reply interface{}, cc *Cli
 			}
 			return toRPCErr(err)
 		}
+		defer t.CloseStream(stream, nil)
 		err = sendRequest(ctx, cc.dopts, cc.dopts.cp, &c, callHdr, stream, t, args, topts)
 		if err != nil {
 			if put != nil {
@@ -296,7 +297,6 @@ func invoke(ctx context.Context, method string, args, reply interface{}, cc *Cli
 		if c.traceInfo.tr != nil {
 			c.traceInfo.tr.LazyLog(&payload{sent: false, msg: reply}, true)
 		}
-		t.CloseStream(stream, nil)
 		if put != nil {
 			updateRPCInfoInContext(ctx, rpcInfo{
 				bytesSent:     stream.BytesSent(),
