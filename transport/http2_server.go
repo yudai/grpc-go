@@ -123,12 +123,11 @@ func newHTTP2Server(conn net.Conn, config *ServerConfig) (_ ServerTransport, err
 	maxStreams := config.MaxStreams
 	if maxStreams == 0 {
 		maxStreams = math.MaxUint32
-	} else {
-		settings = append(settings, http2.Setting{
-			ID:  http2.SettingMaxConcurrentStreams,
-			Val: maxStreams,
-		})
 	}
+	settings = append(settings, http2.Setting{
+		ID:  http2.SettingMaxConcurrentStreams,
+		Val: maxStreams,
+	})
 	iwz := int32(initialWindowSize)
 	if config.InitialWindowSize >= defaultWindowSize {
 		iwz = config.InitialWindowSize
